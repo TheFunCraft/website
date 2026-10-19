@@ -1,0 +1,10 @@
+{
+  "name": "funclient-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FunClient website: download page, admin login and access-approval panel.",
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0"
+  }
+}

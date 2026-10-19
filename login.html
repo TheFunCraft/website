@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FunClient Admin — Login</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#0a0709;--panel:#100c0e;--card:#151013;--card2:#1e161a;--border:#2a2126;--line:#1c161a;
+    --fg:#f7eff3;--soft:#d6c7cf;--muted:#9b8c95;--dim:#847580;
+    --accent:#e8457f;--accent-dim:#b8386a;--accent-light:#f389ac;--danger:#ff5c6e;
+    --display:'DM Serif Display',Georgia,serif;--body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:radial-gradient(110% 70% at 50% -10%,rgba(232,69,127,.16),transparent 60%),var(--bg);
+    color:var(--fg);font-family:var(--body);display:grid;place-items:center;min-height:100%;
+    padding:max(20px,env(safe-area-inset-left)) max(20px,env(safe-area-inset-right));-webkit-font-smoothing:antialiased}
+  .box{width:100%;max-width:380px;background:linear-gradient(180deg,var(--card),var(--panel));border:1px solid var(--border);
+    border-radius:18px;padding:30px 26px;box-shadow:0 30px 70px -30px rgba(0,0,0,.9),0 0 60px -24px rgba(232,69,127,.3)}
+  .logo{display:flex;align-items:center;gap:11px;justify-content:center}
+  .crown{width:26px}
+  .word{font-family:var(--display);font-size:1.7rem;line-height:1}
+  .word i{font-style:italic;color:var(--accent-light)}
+  .h{text-align:center;font-family:var(--display);font-size:1.25rem;margin:18px 0 2px}
+  .h i{font-style:italic;color:var(--accent-light)}
+  .p{text-align:center;color:var(--dim);font-size:.85rem;margin:0 0 22px}
+  label{display:block;font-size:.74rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  input{width:100%;background:#0d0a0c;border:1px solid var(--border);border-radius:10px;color:var(--fg);
+    font-family:var(--body);font-size:1rem;padding:12px 14px;outline:none;transition:.15s}
+  input:focus{border-color:var(--accent-dim);box-shadow:0 0 0 3px rgba(232,69,127,.18)}
+  button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:11px;cursor:pointer;
+    background:linear-gradient(180deg,var(--accent-light),var(--accent));color:#20090f;font-weight:800;font-size:1rem;
+    font-family:var(--body);transition:.15s}
+  button:hover{filter:brightness(1.07)}
+  button:disabled{opacity:.6;cursor:default}
+  .err{display:none;margin-top:14px;text-align:center;color:var(--danger);font-size:.88rem;font-weight:500}
+  .err.show{display:block}
+  .back{display:block;text-align:center;margin-top:18px;color:var(--dim);font-size:.8rem;text-decoration:none}
+  .back:hover{color:var(--soft)}
+</style>
+</head>
+<body>
+  <form class="box" id="form" autocomplete="off">
+    <div class="logo">
+      <svg class="crown" viewBox="0 0 18 15" fill="#e8457f" aria-hidden="true"><rect x="0" y="0" width="3" height="5"/><rect x="7.5" y="0" width="3" height="5"/><rect x="15" y="0" width="3" height="5"/><rect x="0" y="4" width="18" height="7" rx="1"/><rect x="0" y="13" width="18" height="2" rx="1"/></svg>
+      <div class="word">Fun<i>Client</i></div>
+    </div>
+    <div class="h"><i>Admin</i> access</div>
+    <p class="p">Sign in to review and approve access requests.</p>
+    <label for="pw">Admin password</label>
+    <input id="pw" name="pw" type="password" autofocus required>
+    <button id="btn" type="submit">Sign in</button>
+    <div class="err" id="err"></div>
+    <a class="back" href="/download">← Back to download</a>
+  </form>
+  <script>
+    var form=document.getElementById('form'),btn=document.getElementById('btn'),err=document.getElementById('err');
+    function fail(m){err.textContent=m;err.classList.add('show');btn.disabled=false;btn.textContent='Sign in';}
+    form.addEventListener('submit',async function(e){
+      e.preventDefault();err.classList.remove('show');btn.disabled=true;btn.textContent='Signing in…';
+      try{
+        var r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('pw').value})});
+        if(r.ok){location.href='/admin';return;}
+        if(r.status===401){fail('Wrong password.');return;}
+        if(r.status===500){fail('The admin password is not configured on the server yet.');return;}
+        fail('Something went wrong ('+r.status+').');
+      }catch(_){fail('Could not reach the server.');}
+    });
+  </script>
+</body>
+</html>
