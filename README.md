@@ -25,13 +25,13 @@ API (Vercel serverless functions in `/api`):
 4. **Add the jar** — `funclient-1.0.0.jar` lives in this folder and is served at `/funclient-1.0.0.jar`, which the download button links to. Replace it whenever you ship a new build.
 5. **Deploy.**
 
-The FunClient launcher points at `https://website-infinity-1b05.vercel.app` (see `FunClientAuth.java` → `BASE_URL`). Deploy to that project so the client keeps working, or change `BASE_URL` to your new domain and rebuild the mod.
+The FunClient launcher points at `https://funclientoffcial.vercel.app` (see `FunClientAuth.java` → `BASE_URL`). Deploy this site to that domain so the client works, or change `BASE_URL` to a different domain and rebuild the mod.
 
 ## How approval works
 
 1. A player launches FunClient. It `POST`s `/api/request` → a **pending** row appears in `/admin`.
 2. You open `/admin`, sign in, and click **Approve**.
-3. Their client re-checks `/api/verify` every 30 seconds, so it unlocks within half a minute — no restart. **Revoke** or **Deny** locks it again just as fast; **Delete** removes the row (they can request again).
+3. Their client re-checks `/api/verify` about once a second, so it unlocks almost immediately — no restart. **Revoke** or **Deny** locks it again just as fast; **Delete** removes the row (they can request again). (That's one request per second per running client — if it gets costly, raise `POLL_MILLIS` in `FunClientAuth.java`.)
 
 ## Local notes
 

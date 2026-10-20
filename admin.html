@@ -91,7 +91,7 @@
     async function load(){
       try{
         var r=await fetch('/api/requests',{headers:{'Accept':'application/json'}});
-        if(r.status===401){location.href='/login';return;}
+        if(r.status===401||r.status===404){location.href='/login';return;}
         if(!r.ok){rowsEl.innerHTML='<div class="empty">Couldn’t load requests ('+r.status+').</div>';return;}
         var data=await r.json(); ALL=data.requests||[]; stats(); render();
       }catch(_){ rowsEl.innerHTML='<div class="empty">Could not reach the server.</div>'; }
